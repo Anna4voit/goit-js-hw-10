@@ -1,15 +1,16 @@
 import { fetchBreeds, fetchCatByBreed } from './cat-api';
-import './styles.css';
 import SlimSelect from 'slim-select';
-import 'slim-select/dist/slimselect.css';
 import Notiflix from 'notiflix';
+import './styles.css';
+import 'slim-select/dist/slimselect.css';
 
-refs = {
+const refs = {
   selector: document.querySelector('.breed-select'),
   loader: document.querySelector('.loader'),
   error: document.querySelector('.error'),
   divCatInfo: document.querySelector('.cat-info'),
 };
+
 const { selector, loader, error, divCatInfo } = refs;
 
 selector.classList.add('is-hidden');
