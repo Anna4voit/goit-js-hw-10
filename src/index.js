@@ -10,53 +10,57 @@ const refs = {
   error: document.querySelector('.error'),
   divCatInfo: document.querySelector('.cat-info'),
 };
-
+let arrBreeds = [];
 const { selector, loader, error, divCatInfo } = refs;
 
 selector.classList.add('is-hidden');
 error.classList.add('is-hidden');
 divCatInfo.classList.add('is-hidden');
 
-let arrBreeds = [];
 fetchBreeds()
   .then(resp => {
     const optionData = resp.data;
-    optionData.forEach(element => {
-      arrBreeds.push({ text: element.name, value: element.id });
-    });
-    createOptions(arrBreeds);
+    createOptions(optionData);
     selector.classList.remove('is-hidden');
+    loader.hidden = true;
   })
   .catch(Error => fetchError());
 
 function createOptions(arr) {
+  arr.forEach(element => {
+    arrBreeds.push({ text: element.name, value: element.id });
+  });
   new SlimSelect({
     select: selector,
-    data: arr,
+    data: arrBreeds,
   });
 }
 
-selector.addEventListener('change', onBreedsSearch);
+selector.addEventListener('change', onBreedsSelect);
 
-function onBreedsSearch(event) {
-  loader.hidden = true;
-  divCatInfo.classList.add('is-hidden');
+function onBreedsSelect(event) {
+  loader.hidden = false;
   const breedId = event.currentTarget.value;
+
   fetchCatByBreed(breedId)
     .then(data => {
-      const { url, breeds } = data[0];
-      divCatInfo.innerHTML = `<div class="box-img" ><img src="${url}" alt="${breeds[0].name}" width="400" ></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:
-      </b>${breeds[0].temperament}</p></div>`;
-
+      createDivCat(data[0]);
       divCatInfo.classList.remove('is-hidden');
+      loader.hidden = true;
     })
     .catch(Error => fetchError());
+}
+
+function createDivCat(obj) {
+  const { url, breeds } = obj;
+  divCatInfo.innerHTML = `<div class="box-img" ><img src="${url}" alt="${breeds[0].name}" width="400" ></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:
+      </b>${breeds[0].temperament}</p></div>`;
 }
 
 function fetchError() {
   loader.hidden = true;
   Notiflix.Notify.failure(`${error.textContent}`, {
-    timeout: 5000,
+    timeout: 3000,
     position: 'center-center',
     width: '400px',
     fontSize: '24px',
