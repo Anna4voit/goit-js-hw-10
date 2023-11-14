@@ -10,7 +10,9 @@ const refs = {
   error: document.querySelector('.error'),
   divCatInfo: document.querySelector('.cat-info'),
 };
+
 let arrBreeds = [];
+//let arrBreeds = [{ placeholder: true, text: 'Choose a breed' }];
 const { selector, loader, error, divCatInfo } = refs;
 
 selector.classList.add('is-hidden');
@@ -41,7 +43,10 @@ selector.addEventListener('change', onBreedsSelect);
 function onBreedsSelect(event) {
   loader.hidden = false;
   const breedId = event.currentTarget.value;
-
+  divCatInfo.classList.add('is-hidden');
+  // if (selector.selectedIndex === 0) {
+  //   return;
+  // }
   fetchCatByBreed(breedId)
     .then(data => {
       createDivCat(data[0]);
